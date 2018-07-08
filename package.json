@@ -1,0 +1,26 @@
+{
+  "name": "extension",
+  "version": "1.0.0",
+  "description": "Build and debug chrome extension",
+  "scripts": {
+    "test": "ospec", 
+    "start": "webpack-cli --config ./webpack.chrome.js -w",
+    "build": "webpack-cli --config ./webpack.chrome.js",
+    "build:opera": "webpack-cli --config ./webpack.opera.js",
+    "build:chrome": "webpack-cli --config ./webpack.chrome.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "copy-webpack-plugin": "^4.5.1",
+    "css-loader": "^0.28.11",
+    "mini-css-extract-plugin": "^0.4.0",
+    "mithril": "^1.1.6",
+    "node-sass": "^4.9.0",
+    "postcss-loader": "^2.1.5",
+    "sass-loader": "^7.0.3",
+    "style-loader": "^0.21.0",
+    "webpack": "^4.12.0"
+  }
+}
