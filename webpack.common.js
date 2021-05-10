@@ -24,10 +24,17 @@ module.exports = {
                 test: /\.sass$/,
                 use: [
                     mode === 'development' ? 'style-loader' : CssExtractPlugin.loader,
-                        'css-loader',
-                        // 'postcss-loader', TODO: config
-                        'sass-loader']
-            }, 
+                    'css-loader',
+                    // 'postcss-loader', TODO: config
+                    'sass-loader']
+            },
+            {
+                test: /\.js$/,
+                exclude: /\/node_modules\//,
+                use: {
+                    loader: 'babel-loader'
+                }
+            }
         ]
     },
     resolve: {
@@ -39,14 +46,14 @@ module.exports = {
             chunks: ['popup/popup'],
         }),
         new CopyWebpackPlugin({
-                            patterns: [
-                                {from: './manifest.json'},
-                                // {from: './style', to: './style', cache: true},
-                                {from: './icons', to: './icons'},
-                                // {from: './popup/popup.html', to: './popup'},
-                            ]
-                        }),
-        new CssExtractPlugin({filename: '[name].css'}),
+            patterns: [
+                { from: './manifest.json' },
+                // {from: './style', to: './style', cache: true},
+                { from: './icons', to: './icons' },
+                // {from: './popup/popup.html', to: './popup'},
+            ]
+        }),
+        new CssExtractPlugin({ filename: '[name].css' }),
         new webpack.DefinePlugin({
             PLATFORM: JSON.stringify('chrome')
         })
