@@ -13,8 +13,13 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "^7.14.0",
+    "@babel/plugin-transform-react-jsx": "^7.13.12",
+    "@babel/preset-env": "^7.14.1",
+    "babel-loader": "^8.2.2",
     "copy-webpack-plugin": "^8.1.1",
     "css-loader": "^5.2.4",
+    "html-webpack-plugin": "^5.3.1",
     "mini-css-extract-plugin": "^1.6.0",
     "mithril": "^2.0.4",
     "node-sass": "^6.0.0",

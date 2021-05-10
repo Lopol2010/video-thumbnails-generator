@@ -1,5 +1,6 @@
 const path = require('path')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CssExtractPlugin = require('mini-css-extract-plugin')
 const webpack = require('webpack')
 const mode = 'development'
@@ -33,12 +34,16 @@ module.exports = {
         extensions: ['.js', '.ts', '.tsx', '.sass']
     },
     plugins: [
+        new HtmlWebpackPlugin({
+            filename: './popup/popup.html',
+            chunks: ['popup/popup'],
+        }),
         new CopyWebpackPlugin({
                             patterns: [
                                 {from: './manifest.json'},
                                 // {from: './style', to: './style', cache: true},
                                 {from: './icons', to: './icons'},
-                                {from: './popup/popup.html'},
+                                // {from: './popup/popup.html', to: './popup'},
                             ]
                         }),
         new CssExtractPlugin({filename: '[name].css'}),
