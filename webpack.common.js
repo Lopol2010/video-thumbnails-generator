@@ -10,6 +10,7 @@ module.exports = {
     devtool: 'cheap-source-map',
     entry: {
         'background': './background.js',
+        'content': './content.js',
         'popup/popup': './popup/popup.js',
     },
     output: {
@@ -32,11 +33,14 @@ module.exports = {
         extensions: ['.js', '.ts', '.tsx', '.sass']
     },
     plugins: [
-        new CopyWebpackPlugin([{from: './manifest.json', cache: true},
+        new CopyWebpackPlugin({
+                            patterns: [
+                                {from: './manifest.json'},
                                 // {from: './style', to: './style', cache: true},
-                                {from: './icons', to: './icons', cache: true},
-                                {from: './popup/popup.html', cache: true},
-                            ]),
+                                {from: './icons', to: './icons'},
+                                {from: './popup/popup.html'},
+                            ]
+                        }),
         new CssExtractPlugin({filename: '[name].css'}),
         new webpack.DefinePlugin({
             PLATFORM: JSON.stringify('chrome')
