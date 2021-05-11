@@ -3,9 +3,13 @@ let m = require('mithril')
 
 
 
-function getTabId()
+async function getActiveTab()
 {
-    
+    return await chrome.tabs.query({ active: true, lastFocusedWindow: true })
+}
+
+function save(data) {
+    chrome.storage.local.set(data, () => chrome.runtime.lastError ?? console.log(chrome.runtime.lastError))
 }
 
 
@@ -15,7 +19,7 @@ let App = {
             <div>
                 <p>
                     Enabled on this site?
-                    <input type="checkbox" id="enabled" onclick ={ function () { console.log(getTabId()) } }/>
+                    <input type="checkbox" id="enabled" onclick ={ function () {  } }/>
                 </p>
             </div>
         )
