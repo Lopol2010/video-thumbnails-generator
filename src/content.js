@@ -3,6 +3,7 @@ import { getPreview } from './prev'
 let hover = true
 let delayHandle = null
 let DELAY = 1000
+console.log(chrome.storage.local.get(location.hostname))
 document.addEventListener("mousehover", e => {
     if(e.target != null && e.target.tagName == 'VIDEO')
     {
