@@ -17,7 +17,7 @@ module.exports = (env, argv) => {
         },
         mode: env.development ? 'development' : 'production',
         output: {
-            path: path.join(__dirname, 'dist-' + env.platform),
+            path: path.join(__dirname, 'dist-' + (env.development ? 'dev' : env.platform)),
             filename: '[name].js'
         },
         module: {
@@ -34,7 +34,7 @@ module.exports = (env, argv) => {
                     test: /\.sass$/,
                     exclude: /content\.sass$/,
                     use: [
-                        env.development ? 'style-loader' : CssExtractPlugin.loader, // will this even work for popup on production build?
+                        env.development ? 'style-loader' : CssExtractPlugin.loader, 
                         'css-loader',
                         // 'postcss-loader', TODO: config
                         'sass-loader']
@@ -64,7 +64,7 @@ module.exports = (env, argv) => {
                     // {from: './popup/popup.html', to: './popup'},
                 ]
             }),
-            new CssExtractPlugin({ filename: '[name].css' }),
+            new CssExtractPlugin(),
             new webpack.DefinePlugin({
                 BUILD_PLATFORM: JSON.stringify(env.platform)
             })
