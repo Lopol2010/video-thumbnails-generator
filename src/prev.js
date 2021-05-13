@@ -1,110 +1,145 @@
+import Hls from 'hls.js'
+
+
 var $output
 var scale = 0.25
 var duration = 0
-var slices = 5
+var slices = 10
 var slicetimeIter
 var output_images = []
 let MAXWAIT = 5000
+let ISDONE = false
+let onImageRecievedCallback
 
-// let video = $("video").get(0);
-// $output = $("#output");
-// $("#capture").on('click', captureImage);
-
-
-
-function makeSlicetimeIter(video) {
-    let map = new Map()
-    map.set(video, { currentSlice: 0, currentTime: 0 })
+function makeSlicetimeIter() {
     let done = false
-
-    console.log("slicetime called")
+    let curSlice = { currentSlice: 0, currentTime: 0 }
     return {
-        next (video) {
-            let cur = map.get(video)
-            let curSlice = { currentSlice: ++cur.currentSlice, currentTime: Math.floor(video.duration / slices * cur.currentSlice) }
-            if(cur.currentSlice >= slices)
-            {
-                map.set(video, curSlice)
-                done = true
+        next() {
+            if (curSlice.currentSlice == slices) {
                 return { done: true }
             }
-            else
-            {
-                map.set(video, curSlice)
-                return { done: false, value: curSlice }
-            }
+            curSlice.currentSlice++
+            curSlice.currentTime = getSliceTime(curSlice.currentSlice)
+            return { done: false, value: curSlice }
         },
-        current (video) {
-            return map.get(video)
+        current() {
+            return curSlice
         },
-        isDone(video) {
-            return done
+        isDone() {
+            return curSlice.currentSlice == slices
         }
     }
 }
 
 function onVideoSeeked() {
+
+    
+    let curSlice = slicetimeIter.next().value
+    let img = slice(this, curSlice.currentSlice)
+    // console.log("curslice " , curSlice.currentSlice, " isdone ", slicetimeIter.isDone(), img)
+    output_images.push(img)
+    onImageRecievedCallback(img)
+
     if(slicetimeIter.isDone())
     {
-        console.log('done from isDone! ' + JSON.stringify(slicetimeIter.current(this)))
-        // $('#output img').sort((a,b) => { console.log($(b).attr('position')); return $(a).attr('position') < $(b).attr('position') ? -1 : 1;  }).appendTo($output)
-        output_images = output_images.sort((a,b) => { console.log(b.getAttribute('position')); return a.getAttribute('position') < b.getAttribute('position') ? -1 : 1;  })
+        output_images = output_images.sort((a, b) => { console.log(b.getAttribute('position')); return a.getAttribute('position') < b.getAttribute('position') ? -1 : 1; })
+        console.log('done from isDone ! ' + JSON.stringify(slicetimeIter.current(), output_images))
+        // document.body.append(output_images)
         return
-    }
-
-    console.log('seeked')
-    let curSlice = slicetimeIter.current(this)
-    let img = slice(this, curSlice.currentTime, curSlice.currentSlice)
-    output_images.push(img)
-    // $output.prepend(img);
-
-    // if(!slicetimeIter) return
-
-    let next = slicetimeIter.next(this)
-    if(next.done)
-    {
-        console.log('done!')
-    }
-    else
-    {
-        console.log('KKEE! ' + next.value.currentTime)
-        this.currentTime = next.value.currentTime 
     }
 
 }
 
-export function getPreview(video) {
+/**
+ * 
+ * @param {HTMLVideoElement} video target video to get preview images from
+ * @param {(image: HTMLImageElement) => void} onImageRecieved newly loaded images will be passed in this callback 
+ * @param {number} timeout max allowed time to wait for images
+ * @returns 
+ */
+export function getImages(video, onImageRecieved, timeout = MAXWAIT) {
     beingSlicing(video)
+    onImageRecievedCallback = onImageRecieved
     return new Promise((resolve, reject) => {
-        let waittime = MAXWAIT
-        let rate = 100
+        
+        let rate = 50
         let interval = setInterval(() => {
             console.log('interval')
-            if(slicetimeIter.isDone())
-            {
+            if (slicetimeIter.isDone()) {
                 resolve(output_images)
                 clearInterval(interval)
             }
-            else if(waittime > 0)
-            {
-                waittime -= rate
+            else if (timeout > 0) {
+                timeout -= rate
             }
-            else if(waittime < 0)
-            {
+            else if (timeout <= 0) {
                 resolve(output_images)
                 clearInterval(interval)
             }
         }, rate)
     })
 }
+export function getPreview(video, threads) {
+    try {
+        beingSlicing(video)
+    } catch (error) {
+        console.log(error)
+    }
+    return new Promise((resolve, reject) => {
+        let waittime = MAXWAIT
+        let rate = 100
+        let interval = setInterval(() => {
+            console.log('interval')
+            if (slicetimeIter.isDone()) {
+                resolve(output_images)
+                clearInterval(interval)
+            }
+            else if (waittime > 0) {
+                waittime -= rate
+            }
+            else if (waittime <= 0) {
+                resolve(output_images)
+                clearInterval(interval)
+            }
+        }, rate)
+    })
+}
+function getSliceTime(sliceNum) {
+    return Math.floor(duration / slices * sliceNum - (duration/slices/2));
+}
+function beingSlicing(video, threads = true) {
 
-function beingSlicing(video) {
     duration = video.duration
-    
     slicetimeIter = makeSlicetimeIter(video)
-    console.log('duration set: ' + duration)
-    video.addEventListener('seeked', onVideoSeeked)
-    video.currentTime = 1 //slicetimeIter.next(this).value.currentTime
+    if (threads) {
+        for (let i = 0; i < slices; i++) {
+            if (video.src.search('.m3u8') != -1 || video.querySelector('source').src.search('.m3u8') != -1) {
+                if (Hls.isSupported()) {
+                    let hls = new Hls();
+                    hls.loadSource(video.querySelector('source').src);
+                    let newVideoElem = document.createElement('video')
+                    document.body.prepend(newVideoElem)
+                    hls.attachMedia(newVideoElem);
+                    hls.on(Hls.Events.BUFFER_APPENDED, (e, buf) => console.log("BUFFER_APPENDED: "+buf))
+                    newVideoElem.addEventListener('seeked', onVideoSeeked)
+                    newVideoElem.currentTime = getSliceTime(i+1)
+                    console.log('slicing threaded ', newVideoElem, (video.querySelector('source').src))
+                }
+                else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                    video.src = videoSrc;
+                }
+            }
+            else {
+
+            }
+        }
+    }
+    else {
+        console.log('duration set: ' + duration)
+        video.addEventListener('seeked', onVideoSeeked)
+        video.currentTime = 1 //slicetimeIter.next(this).value.currentTime
+    }
 }
 
 // $(video).on('loadedmetadata', function () {
@@ -114,17 +149,16 @@ function beingSlicing(video) {
 //     this.currentTime = 1 //slicetimeIter.next(this).value.currentTime
 // })
 
-function slice(video, time, index) {
+function slice(video, index) {
 
     var canvas = document.createElement("canvas");
     canvas.width = video.videoWidth * scale;
     canvas.height = video.videoHeight * scale;
-    video.currentTime = time
     var img = document.createElement("img");
 
     canvas.getContext('2d')
         .drawImage(video, 0, 0, canvas.width, canvas.height);
-    console.log("slicing at " + time)
+    console.log("slicing at " + getSliceTime(index))
     img.src = canvas.toDataURL();
     img.setAttribute('position', index)
 

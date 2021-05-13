@@ -1,5 +1,11 @@
 #### Description
-Basic extension template for chromium based browsers.
-#### Details
-Includes webpack config template to build chrome and opera extension (Use DefinePlugin to distinct code)  
-Template may have errors but its so basic you can easily fix it  
+Tech stack: webpack, mithril.js, sass  
+Only for chrome and opera but should be easy to configure for other chormium based browsers.  
+Use 'BUILD_PLATFORM' in your scripts to write browser specific code.  
+Values are: opera, chrome
+
+
+#### TODO:
+* Add chrome.i18n 
+* Add typescript 
+

@@ -10,20 +10,21 @@ async function getActiveTab()
 }
 
 function save(data) {
-    chrome.storage.local.set(data, () => chrome.runtime.lastError ?? console.log(chrome.runtime.lastError))
+    console.log("saved data ", data, typeof data) 
+    chrome.storage.local.set(data, () => { 
+        if(chrome.runtime.lastError) console.log(chrome.runtime.lastError) 
+    })
 }
 
 function getBaseUrl(url) {
-    let a = document.createElement('a')
-    a.href = url
-    return a.hostname
+    return new URL(url).hostname
 }
 
 async function onClickCheckboxEnabled(e) {
-    let tab = getActiveTab()
+    let tab = await getActiveTab()
     let hostname = getBaseUrl(tab.url)
     let data = {}
-    data[hostname] = JSON.stringify({ enabled: e.target.value })
+    data[hostname] = { enabled: e.target.checked }
     save(data)
 }
 
