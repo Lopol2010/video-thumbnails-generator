@@ -1,10 +1,10 @@
 {
 	"manifest_version" : 3,
-	"name" : "...",
-	"short_name" : "...",
+	"name" : "Video Thumbnails Generator",
+	"short_name" : "Thumbnails Generator",
 	"version" : "1.0",
-	"author" : "...",
-	"description" : "...",
+	"author" : "Lopol2010",
+	"description" : "Generate thumbnails (sequence of preview images) for online videos",
 	
 	"icons" : {
 		"16" : "icons/16x16.png",
@@ -20,13 +20,12 @@
 			"matches": ["*://*/*"],
 			"js": ["content.js"],
             "css": ["content.css"],
-			"run_at": "document_end"
+			"run_at": "document_start"
 		}	
 	],
     
     "permissions": [
         "storage",
-        "tabs",
         "activeTab"
     ],
 

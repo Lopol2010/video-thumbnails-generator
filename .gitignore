@@ -1,5 +1,5 @@
 .vscode/
-dist-chrome/
+dist-*/
 node_modules/
 package-lock.json
 .gitattributes

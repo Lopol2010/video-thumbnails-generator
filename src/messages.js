@@ -1,0 +1,5 @@
+module.exports = {
+    MESSAGE_ENABLED: 1,
+    MESSAGE_DISABLED: 2,
+    MESSAGE_SELECT_VIDEO: 3,
+}

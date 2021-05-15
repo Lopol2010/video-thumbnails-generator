@@ -26,7 +26,16 @@ module.exports = (env, argv) => {
                     include: /content\.sass$/,
                     use: [
                         CssExtractPlugin.loader,
-                        'css-loader',
+                        {
+                            loader: 'css-loader',
+                            options: {
+                                modules: {
+                                    localIdentName: '[local]--[hash:base64:5]', // add hash to classnames so that they dont mess up
+                                    exportLocalsConvention: 'camelCase'
+                                }
+                            }
+
+                        },
                         // 'postcss-loader', TODO: config
                         'sass-loader']
                 },

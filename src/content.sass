@@ -3,12 +3,17 @@ $size: 500px
 .overlay
     position: fixed
     z-index: 999
-    height: 100vh
-    width: 100vw
+    height: 100%
+    width: 100%
     display: flex
+    top: 0
+    bottom: 0
+    left: 0
+    right: 0
+    justify-content: center
 
 .overlay__modal-container
-    flex: 1
+    flex: 0 1 80%
     align-self: center
 
 .modal
@@ -18,12 +23,13 @@ $size: 500px
 
 .gallery
     display: flex
+    flex-wrap: wrap
 .gallery__item
-    width: 20%
-    flex: 1
+    flex: 0 1 calc(20% - 4px)
     margin: 2px
 .gallery__image
     float: left
+    width: 100%
 
 .hidden
     display: none
