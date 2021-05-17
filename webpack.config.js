@@ -26,19 +26,17 @@ module.exports = (env, argv) => {
                     test: /\.sass$/,
                     // exclude: /content\.sass$/,
                     use: [
-                        env.development ? 
-                            {
-                                loader: 'style-loader',
-                                options: {
-                                    // This is needed if extension loaded at document_start in chrome, when no DOM exists.
-                                    insert: function (element) {
-                                        document.addEventListener('DOMContentLoaded', e => {
-                                            document.querySelector('head').append(element)
-                                        })
-                                    }
+                        {
+                            loader: 'style-loader',
+                            options: {
+                                // This is needed if extension loaded at document_start in chrome, when no DOM exists.
+                                insert: function (element) {
+                                    document.addEventListener('DOMContentLoaded', e => {
+                                        document.querySelector('head').append(element)
+                                    })
                                 }
                             }
-                            : CssExtractPlugin.loader, 
+                        },
                         {
                             loader: 'css-loader',
                             options: {

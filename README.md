@@ -1,11 +1,17 @@
-#### Description
-Tech stack: webpack, mithril.js, sass  
-Only for chrome and opera but should be easy to configure for other chormium based browsers.  
-Use 'BUILD_PLATFORM' in your scripts to write browser specific code.  
-Values are: opera, chrome
+#### Development
+Optionally install '[Extensions Reloader](https://chrome.google.com/webstore/detail/extensions-reloader/fimgfedafeadlieiabdeeaodndnlbhid)' for chrome so development will be easier
+After clonning install dependencies
+* npm i
+To start auto-build on file changes
+* npm start
+#### BUILD
+After clonning install dependencies
+* npm i
+For chrome:
+* npm start build
+For opera
+* npm start build:opera
+Output will be in dist-* folders
 
 
-#### TODO:
-* Add chrome.i18n 
-* Add typescript 
 
