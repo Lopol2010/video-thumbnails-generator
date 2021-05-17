@@ -1,0 +1,40 @@
+
+.notifications-list
+    position: fixed
+    top: 3%
+    right: 5%
+    float: right
+
+.notification
+    padding: 20px
+    background: #2c2c2c
+    cursor: pointer
+
+.notification_appear
+    animation: appear 0.3s ease-out
+
+.notification_disappear
+    animation: disappear 0.3s ease forwards
+
+.notification__text
+    font-family: sans-serif
+    color: white
+.notification__subtext
+    font-family: sans-serif
+    color: lightgray
+    font-size: small
+
+@keyframes disappear
+    0%
+        opacity: 1
+    100%
+        opacity: 0
+
+@keyframes appear
+    0%
+        transform: translateX(100%)
+        opacity: 0
+        
+    100%
+        transform: translateX(0%)
+        opacity: 1 

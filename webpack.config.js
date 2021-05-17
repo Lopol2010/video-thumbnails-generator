@@ -23,29 +23,32 @@ module.exports = (env, argv) => {
         module: {
             rules: [
                 {
-                    include: /content\.sass$/,
+                    test: /\.sass$/,
+                    // exclude: /content\.sass$/,
                     use: [
-                        CssExtractPlugin.loader,
+                        env.development ? 
+                            {
+                                loader: 'style-loader',
+                                options: {
+                                    // This is needed if extension loaded at document_start in chrome, when no DOM exists.
+                                    insert: function (element) {
+                                        document.addEventListener('DOMContentLoaded', e => {
+                                            document.querySelector('head').append(element)
+                                        })
+                                    }
+                                }
+                            }
+                            : CssExtractPlugin.loader, 
                         {
                             loader: 'css-loader',
                             options: {
                                 modules: {
-                                    localIdentName: '[local]--[hash:base64:5]', // add hash to classnames so that they dont mess up
+                                    localIdentName: '[local]--[hash:base64:5]', // add hash to classnames so that they dont mess up with site's styles
                                     exportLocalsConvention: 'camelCase'
                                 }
                             }
-
                         },
-                        // 'postcss-loader', TODO: config
-                        'sass-loader']
-                },
-                {
-                    test: /\.sass$/,
-                    exclude: /content\.sass$/,
-                    use: [
-                        env.development ? 'style-loader' : CssExtractPlugin.loader, 
-                        'css-loader',
-                        // 'postcss-loader', TODO: config
+                        // 'postcss-loader', TODO: configure this
                         'sass-loader']
                 },
                 {

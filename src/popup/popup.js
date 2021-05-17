@@ -1,5 +1,5 @@
 import "./popup.sass"
-import { MESSAGE_SELECT_VIDEO, MESSAGE_DISABLED, MESSAGE_ENABLED } from "../messages"
+import { MSG_SELECT_VIDEO, MSG_DISABLED, MSG_ENABLED, MSG_SHOW_IMAGES_MODAL } from "../shared/messages"
 let m = require('mithril')
 
 let state = {
@@ -48,7 +48,7 @@ function getBaseUrl(url) {
 }
 async function onClickButtonSelectVideo(e) {
     let tab = await getActiveTab()
-    chrome.tabs.sendMessage(tab.id, { id: MESSAGE_SELECT_VIDEO })
+    chrome.tabs.sendMessage(tab.id, { id: MSG_SELECT_VIDEO })
 }
 
 async function onClickCheckboxEnabled(e) {
@@ -62,11 +62,14 @@ async function onClickCheckboxEnabled(e) {
             console.log(chrome.runtime.lastError) 
             return
         }
-        chrome.tabs.sendMessage(tab.id, { id: state.enabled ? MESSAGE_ENABLED : MESSAGE_DISABLED })
+        chrome.tabs.sendMessage(tab.id, { id: state.enabled ? MSG_ENABLED : MSG_DISABLED })
     })
     m.redraw()
 }
-
+async function onClickHistoryEntry(images) {
+    let tab = await getActiveTab()
+    chrome.tabs.sendMessage(tab.id, { id: MSG_SHOW_IMAGES_MODAL, images: images })
+}
 let App = {
     view: function () {
         return (
@@ -75,10 +78,10 @@ let App = {
                     Enabled on this site?
                     <input type="checkbox" id="enabled" checked={state.enabled} onclick ={ function (e) { onClickCheckboxEnabled(e) } }/>
                 </p>
-                <button onclick={ e => onClickButtonSelectVideo()}>Select video</button>
+                {/* <button onclick={ e => onClickButtonSelectVideo()}>Select video</button> */}
                 { state.history.map(images => {
 
-                    return <div>
+                    return <div onclick={e => onClickHistoryEntry(images)}>
                         {images.map(src => {
                             return <img src={src.dataUrl} key={src.index} width={30}></img>
                         })}
