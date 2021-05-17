@@ -1,7 +1,7 @@
 {
-  "name": "extension",
+  "name": "video-thumbnails-venerator",
   "version": "1.0.0",
-  "description": "Boilerplate project for chromium extension development",
+  "description": "Chrome extension that can generate video thumbnails online",
   "scripts": {
     "test": "ospec",
     "start": "webpack-cli -w --env development",
@@ -13,7 +13,9 @@
     "chrome",
     "opera",
     "chromium",
-    "boilerplate"
+    "hls",
+    "video",
+    "thumbnails"
   ],
   "author": "Lopol2010",
   "license": "ISC",
