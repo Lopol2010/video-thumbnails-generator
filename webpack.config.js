@@ -69,9 +69,7 @@ module.exports = (env, argv) => {
             new CopyWebpackPlugin({
                 patterns: [
                     { from: './manifest.json' },
-                    // {from: './style', to: './style', cache: true},
-                    { from: './icons', to: './icons' },
-                    // {from: './popup/popup.html', to: './popup'},
+                    // { from: './icons', to: './icons' },
                 ]
             }),
             new CssExtractPlugin(),
