@@ -129,9 +129,10 @@ function beingSlicing(video, sequentially = false) {
                 if (Hls.isSupported()) {
                     let hls = new Hls({
                         startPosition: getSliceTime(i + 1),
-                        maxBufferLength: 0.1,
+                        // maxBufferLength: 0.1,
                         backBufferLength: 0,
-                        maxBufferSize: 5 * 1000 * 1000,
+                        // maxBufferSize: 5 * 1000 * 1000,
+                        maxMaxBufferLength: 1
                     });
 
                     let newVideoElem = document.createElement('video')
